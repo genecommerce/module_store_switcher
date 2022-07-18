@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+
+        <!-- Add website switcher -->
+        <referenceContainer name="header.panel">
+
+            <container name="header.panel.store.switcher" htmlTag="div" htmlClass="header-panel__store-switcher is-hidden-mobile is-hidden-tablet">
+                <block ifconfig="storeswitcher/general/enable"
+                       class="Gene\StoreSwitcher\Block\StoreSwitcher"
+                       name="gene.storeswitcher"
+                       template="Gene_StoreSwitcher::store-switcher.phtml"
+                       before="-">
+                    <arguments>
+                        <argument name="view_model" xsi:type="object">Gene\StoreSwitcher\ViewModel\Website</argument>
+                    </arguments>
+                </block>
+            </container>
+
+
+            <!-- Mobile Menu -->
+            <referenceBlock name="store.menu">
+                <!-- Add button that opens website switcher -->
+                    <block ifconfig="storeswitcher/general/enable"
+                           class="Gene\StoreSwitcher\Block\StoreSwitcher"
+                           name="gene.storeswitcher.mobile.trigger"
+                           template="Gene_StoreSwitcher::mobile-trigger.phtml"
+                           after="-">
+                        <arguments>
+                            <argument name="view_model" xsi:type="object">Gene\StoreSwitcher\ViewModel\Website</argument>
+                        </arguments>
+                    </block>
+            </referenceBlock>
+
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,42 @@
+<?php
+/** @var $viewModel \Gene\StoreSwitcher\ViewModel\Website */
+/** @var $block \Gene\StoreSwitcher\Block\StoreSwitcher */
+
+$viewModel = $block->getViewModel();
+$stores = $viewModel->getAll();
+$currentStore = $viewModel->getCurrent();
+if ($stores) : ?>
+
+    <div data-mage-init='{
+    "collapsible":{
+        "collapsible": true,
+        "openedState": "active"
+    }}' class="is-hidden-desktop">
+        <button data-role="title" aria-expanded="false" class="store-switcher__trigger"
+                data-trigger="store-switcher-modal">
+            <svg width="24" height="16" viewBox="0 0 24 16" class="icon icon-store">
+                <use xlink:href="#icon-store-<?= $block->escapeHtmlAttr($currentStore->getCode()); ?>"></use>
+            </svg>
+            <?= $block->escapeHtml(__('%1 (%2)', $currentStore->getName(), $currentStore->getCurrentCurrency()->getCurrencySymbol())); ?>
+            <svg width="14" height="16" viewBox="0 0 14 16" class="icon icon-arrow icon-arrow--down">
+                <use xlink:href="#icon-arrow"></use>
+            </svg>
+        </button>
+        <div class="store-switcher__content" data-role="content">
+            <div class="store-switcher__switch">
+                <ul>
+                    <?php foreach ($stores as $store) : ?>
+                        <li class="<?= $block->escapeHtml($store['code']);?>">
+                            <a href="<?= $block->escapeUrl($block->getSwitchUrl($store['id'])); ?>">
+                                <svg width="24" height="16" viewBox="0 0 24 16" class="icon icon-store">
+                                    <use xlink:href="#icon-store-<?= $block->escapeHtml($store['code']);?>"></use>
+                                </svg>
+                                <p><?= $block->escapeHtml($store['name']); ?></p>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
