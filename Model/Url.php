@@ -19,24 +19,15 @@ class Url
     protected $storeManager;
 
     /**
-     * @var UriFactory
-     */
-    private UriFactory $uriFactory;
-
-    /**
      * @param UrlFinderInterface $urlFinder
      * @param StoreManagerInterface $storeManager
-     * @param UriFactory $uriFactory
      */
     public function __construct(
         UrlFinderInterface $urlFinder,
-        StoreManagerInterface $storeManager,
-        UriFactory $uriFactory
-    )
-    {
+        StoreManagerInterface $storeManager
+    ) {
         $this->urlFinder = $urlFinder;
         $this->storeManager = $storeManager;
-        $this->uriFactory = $uriFactory;
     }
 
     /**
@@ -52,8 +43,8 @@ class Url
 
         if ($store instanceof StoreInterface) {
             $storeBaseUrl = $store->getBaseUrl(); /** @phpstan-ignore-line */
-            $urlParts = $this->uriFactory->factory($referringUrl);
-            $urlPath = $urlParts['path'] ?? ""; /** @phpstan-ignore-line */
+            $urlParts = UriFactory::factory($referringUrl);
+            $urlPath = $urlParts->getPath() ?? ""; /** @phpstan-ignore-line */
             $route = $this->urlFinder->findOneByData(
                 [
                     UrlRewrite::REQUEST_PATH => ltrim($urlPath, '/'),

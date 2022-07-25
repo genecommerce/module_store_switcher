@@ -93,7 +93,10 @@ class Index implements ActionInterface
             try {
                 $store = $this->storeManager->getStore($storeId);
                 $currentStore = $this->storeManager->getStore();
-                $newUrl = $this->url->build($store->getId(), $referringUrl);
+                $newUrl = $this->url->build(
+                    (int) $store->getId(),
+                    $referringUrl
+                );
                 $this->httpContext->setValue(Store::ENTITY, $store->getCode(), $currentStore->getCode());
                 $this->storeCookieManager->setStoreCookie($store);
                 $resultRedirect = $this->resultRedirectFactory->create();
