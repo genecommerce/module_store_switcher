@@ -22,7 +22,5 @@ class Url extends TestCase
             ->setMethodsExcept(['build'])
             ->getMock();
         $url = $this->url;
-
     }
-
 }

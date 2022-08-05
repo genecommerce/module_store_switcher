@@ -1,17 +1,39 @@
 {
     "name": "gene/module-store-switcher",
-    "description": "",
+    "description": "Magento 2.x module to add alternative store switcher functionality to the core implementation.",
+    "version": "0.2.0",
+    "keywords": ["Store Switcher", "Gene", "Magento 2"],
     "require": {
-        "magento/magento-composer-installer": "*"
+        "php": "~7.4.0||~8.1.0",
+        "magento/framework": "*",
+        "magento/magento-coding-standard": "*",
+        "phpunit/phpunit": "^9.1",
+	    "tddwizard/magento2-fixtures": "^1.1.2",
+        "magento/module-store": "*"
     },
-    "type": "magento2-module",
-    "version": "0.1.0",
+    "require-dev": {
+        "phpstan/phpstan": "*",
+        "bitexpert/phpstan-magento": "^0.23"
+    },
     "autoload": {
         "files": [
             "registration.php"
         ],
         "psr-4": {
             "Gene\\StoreSwitcher\\": ""
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "magento/composer-dependency-version-audit-plugin": true
         }
     }
 }
