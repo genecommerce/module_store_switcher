@@ -1,0 +1,17 @@
+parameters:
+    checkMissingIterableValueType: false
+    bootstrapFiles:
+        - vendor/bitexpert/phpstan-magento/autoload.php
+    level: 7
+    fileExtensions:
+        - php
+        - phtml
+    paths:
+        - Block
+        - Controller
+        - Helper
+        - Model
+        - ViewModel
+    excludePaths:
+includes:
+    - vendor/bitexpert/phpstan-magento/extension.neon

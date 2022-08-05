@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <description>Store Switcher Ruleset</description>
+    <rule ref="Generic.Files.LineLength.TooLong">
+        <exclude-pattern>*\.phtml</exclude-pattern>
+    </rule>
+    <arg name="encoding" value="UTF-8"/>
+    <arg value="sp"/>
+    <file>.</file>
+    <exclude-pattern>*\.phtml</exclude-pattern>
+    <exclude-pattern>*\.html</exclude-pattern>
+    <exclude-pattern>*\.less</exclude-pattern>
+    <exclude-pattern>vendor</exclude-pattern>
+</ruleset>
