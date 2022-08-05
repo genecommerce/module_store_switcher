@@ -12,7 +12,6 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Controller\Store\SwitchAction\CookieManager;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreIsInactiveException;
 use Magento\Store\Model\StoreManagerInterface;
@@ -46,11 +45,6 @@ class Index implements ActionInterface
     private RedirectFactory $resultRedirectFactory;
 
     /**
-     * @var CookieManager
-     */
-    private CookieManager $cookieManager;
-
-    /**
      * @var StoreSwitcherInterface
      */
     private StoreSwitcherInterface $storeSwitcher;
@@ -61,7 +55,6 @@ class Index implements ActionInterface
      * @param Url $url
      * @param RedirectInterface $redirect
      * @param RedirectFactory $resultRedirectFactory
-     * @param CookieManager $cookieManager
      * @param StoreSwitcherInterface $storeSwitcher
      */
     public function __construct(
@@ -70,7 +63,6 @@ class Index implements ActionInterface
         Url $url,
         RedirectInterface $redirect,
         RedirectFactory $resultRedirectFactory,
-        CookieManager $cookieManager,
         StoreSwitcherInterface $storeSwitcher
     ) {
         $this->request = $request;
@@ -78,7 +70,6 @@ class Index implements ActionInterface
         $this->url = $url;
         $this->redirect = $redirect;
         $this->resultRedirectFactory = $resultRedirectFactory;
-        $this->cookieManager = $cookieManager;
         $this->storeSwitcher = $storeSwitcher;
     }
 
@@ -108,38 +99,11 @@ class Index implements ActionInterface
                 $store,
                 $newUrl
             );
-            $this->setStoreCookieIfApplicable(
-                $store,
-                $currentStore
-            );
             $resultRedirect = $this->resultRedirectFactory->create();
             $resultRedirect->setUrl($newUrl);
             return $resultRedirect;
         }
         return $this->getDefaultRedirect();
-    }
-
-    /**
-     * We should only set the `store` cookie for target store if the host is the same
-     * ie. store.com/en-gb store.com/en-us would require a store cookie store.en-gb.com store.en-us.com wouldn't
-     * because the cookie domains are different we would end up setting a cookie on store.en-gb.com saying the `store` is the us one
-     * and this can cause redirect loops or unexpected functionality
-     *
-     * @param StoreInterface $targetStore
-     * @param StoreInterface $currentStore
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Stdlib\Cookie\CookieSizeLimitReachedException
-     * @throws \Magento\Framework\Stdlib\Cookie\FailureToSendException
-     */
-    private function setStoreCookieIfApplicable(
-        StoreInterface $targetStore,
-        StoreInterface $currentStore
-    ): void {
-        $targetStoreHost = parse_url($targetStore->getBaseUrl(), PHP_URL_HOST);
-        $currentStoreHost = parse_url($targetStore->getBaseUrl(), PHP_URL_HOST);
-        if ($currentStoreHost === $targetStoreHost) {
-            $this->cookieManager->setCookieForStore($targetStore);
-        }
     }
 
     /**
