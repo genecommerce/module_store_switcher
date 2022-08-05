@@ -68,6 +68,10 @@ class Website implements ArgumentInterface
         return $this->storeManager->getStore();
     }
 
+    /**
+     * @return string
+     * @throws NoSuchEntityException
+     */
     public function getCurrentStoreCountry(): string
     {
         $store = $this->getCurrent();

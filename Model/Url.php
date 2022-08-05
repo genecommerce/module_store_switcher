@@ -12,11 +12,15 @@ use Magento\Store\Api\Data\StoreInterface;
 
 class Url
 {
-    /** @var UrlFinderInterface */
-    protected $urlFinder;
+    /**
+     * @var UrlFinderInterface
+     */
+    private $urlFinder;
 
-    /** @var StoreManagerInterface */
-    protected $storeManager;
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
 
     /**
      * @param UrlFinderInterface $urlFinder
@@ -31,32 +35,30 @@ class Url
     }
 
     /**
+     * Build URL for store using referring URL
+     *
      * @param int $storeId
      * @param string $referringUrl
      * @return string
      * @throws NoSuchEntityException
      */
-    public function build(int $storeId, string $referringUrl)
-    {
+    public function build(
+        int $storeId,
+        string $referringUrl
+    ): string {
         /** @var StoreInterface $store */
         $store = $this->storeManager->getStore($storeId);
-
         if ($store instanceof StoreInterface) {
             $storeBaseUrl = $store->getBaseUrl(); /** @phpstan-ignore-line */
             $urlParts = UriFactory::factory($referringUrl);
-            $urlPath = $urlParts->getPath() ?? ""; /** @phpstan-ignore-line */
-            $route = $this->urlFinder->findOneByData(
-                [
-                    UrlRewrite::REQUEST_PATH => ltrim($urlPath, '/'),
-                    UrlRewrite::STORE_ID => $storeId,
-                ]
-            );
-
-            if ($route instanceof UrlRewrite) {
-                return $storeBaseUrl . $route->getRequestPath();
-            } else {
-                return $storeBaseUrl;
-            }
+            $urlPath = $urlParts->getPath() ?? ''; /** @phpstan-ignore-line */
+            $route = $this->urlFinder->findOneByData([
+                UrlRewrite::REQUEST_PATH => ltrim($urlPath, '/'),
+                UrlRewrite::STORE_ID => $storeId,
+            ]);
+            return $route !== null ?
+                $storeBaseUrl . $route->getRequestPath() :
+                $storeBaseUrl;
         }
     }
 }
