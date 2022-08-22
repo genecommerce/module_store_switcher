@@ -9,6 +9,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
+use Gene\StoreSwitcher\Helper\Data;
 
 class Website implements ArgumentInterface
 {
@@ -23,17 +24,25 @@ class Website implements ArgumentInterface
     private $directoryHelper;
 
     /**
+     * @var Data
+     */
+    private $switcherHelper;
+
+    /**
      * Website constructor
      *
      * @param DirectoryHelper $directoryHelper
      * @param StoreManagerInterface $storeManager
+     * @param Data $switcherHelper
      */
     public function __construct(
         DirectoryHelper $directoryHelper,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        Data $switcherHelper
     ) {
         $this->directoryHelper = $directoryHelper;
         $this->storeManager = $storeManager;
+        $this->switcherHelper = $switcherHelper;
     }
 
     /**
@@ -43,6 +52,8 @@ class Website implements ArgumentInterface
     {
         $storeList = [];
         $stores = $this->storeManager->getStores();
+        $excludedStores = $this->switcherHelper->getExcludedStores() ? $this->switcherHelper->getExcludedStores() : '';
+        $excludedStores = explode(',', $excludedStores);
         /** @var StoreInterface|Store $store */
         foreach ($stores as $store) {
             $countryCode = $this->directoryHelper->getDefaultCountry($store);
@@ -50,11 +61,14 @@ class Website implements ArgumentInterface
                 'UK' :
                 $countryCode;
             $storeId = $store->getId();
-            $storeList[$storeId]['id'] = $storeId;
-            $storeList[$storeId]['name'] = $store->getName();
-            $storeList[$storeId]['currency'] = $store->getCurrentCurrency()->getCurrencySymbol(); /** @phpstan-ignore-line */
-            $storeList[$storeId]['code'] = $store->getCode();
-            $storeList[$storeId]['country_code'] = $countryCode;
+            if (!in_array($storeId, $excludedStores)) {
+                $storeList[$storeId]['id'] = $storeId;
+                $storeList[$storeId]['name'] = $store->getName();
+                $storeList[$storeId]['currency'] = $store->getCurrentCurrency()->getCurrencySymbol();
+                /** @phpstan-ignore-line */
+                $storeList[$storeId]['code'] = $store->getCode();
+                $storeList[$storeId]['country_code'] = $countryCode;
+            }
         }
         return $storeList;
     }

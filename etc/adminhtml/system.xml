@@ -16,6 +16,11 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Enables or disables the module.</comment>
                 </field>
+                <field id="exclude_stores" translate="label" type="multiselect" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Store View to exclude from storeswitcher</label>
+                    <source_model>Gene\StoreSwitcher\Model\Config\Source\Store</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
             </group>
         </section>
     </system>
