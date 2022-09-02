@@ -10,23 +10,21 @@ use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Gene\StoreSwitcher\Helper\Data;
+use Magento\Store\Api\GroupRepositoryInterface;
 
 class Website implements ArgumentInterface
 {
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
+    /** @var StoreManagerInterface */
+    private StoreManagerInterface $storeManager;
 
-    /**
-     * @var DirectoryHelper
-     */
-    private $directoryHelper;
+    /** @var DirectoryHelper */
+    private DirectoryHelper $directoryHelper;
 
-    /**
-     * @var Data
-     */
-    private $switcherHelper;
+    /** @var Data */
+    private Data $switcherHelper;
+
+    /** @var GroupRepositoryInterface */
+    private GroupRepositoryInterface $storeGroupRepository;
 
     /**
      * Website constructor
@@ -34,15 +32,18 @@ class Website implements ArgumentInterface
      * @param DirectoryHelper $directoryHelper
      * @param StoreManagerInterface $storeManager
      * @param Data $switcherHelper
+     * @param GroupRepositoryInterface $storeGroupRepository
      */
     public function __construct(
         DirectoryHelper $directoryHelper,
         StoreManagerInterface $storeManager,
-        Data $switcherHelper
+        Data $switcherHelper,
+        GroupRepositoryInterface $storeGroupRepository
     ) {
         $this->directoryHelper = $directoryHelper;
         $this->storeManager = $storeManager;
         $this->switcherHelper = $switcherHelper;
+        $this->storeGroupRepository = $storeGroupRepository;
     }
 
     /**
@@ -93,5 +94,14 @@ class Website implements ArgumentInterface
         return $country === 'GB' ?
             'UK' :
             $country;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStoreGroupName(): string
+    {
+        $storeGroupId = $this->getCurrent()->getStoreGroupId();
+        return $this->storeGroupRepository->get($storeGroupId)->getName();
     }
 }
