@@ -69,6 +69,7 @@ class Website implements ArgumentInterface
                 /** @phpstan-ignore-line */
                 $storeList[$storeId]['code'] = $store->getCode();
                 $storeList[$storeId]['country_code'] = $countryCode;
+                $storeList[$storeId]['group_id'] = $store->getGroupId();
             }
         }
         return $storeList;
@@ -97,11 +98,12 @@ class Website implements ArgumentInterface
     }
 
     /**
+     * @param int|null $groupId
      * @return string
      */
-    public function getStoreGroupName(): string
+    public function getStoreGroupName($groupId = null): string
     {
-        $storeGroupId = $this->getCurrent()->getStoreGroupId();
+        $storeGroupId = ($groupId === null) ? $this->getCurrent()->getStoreGroupId() : $groupId;
         return $this->storeGroupRepository->get($storeGroupId)->getName();
     }
 }
