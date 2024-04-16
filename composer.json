@@ -1,7 +1,7 @@
 {
     "name": "gene/module-store-switcher",
     "description": "Magento 2.x module to add alternative store switcher functionality to the core implementation.",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "keywords": ["Store Switcher", "Gene", "Magento 2"],
     "require": {
         "php": "~7.4.0||~8.1.0",
