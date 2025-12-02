@@ -21,6 +21,10 @@
                     <source_model>Gene\StoreSwitcher\Model\Config\Source\Store</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
+                <field id="store_name" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="5" translate="label" type="text">
+                    <label>Store name</label>
+                    <comment>This store name will be displayed in the popup</comment>
+                </field>
             </group>
         </section>
     </system>
