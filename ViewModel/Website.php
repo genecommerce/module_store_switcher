@@ -8,42 +8,25 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\Store;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Gene\StoreSwitcher\Helper\Data;
+use Gene\StoreSwitcher\Model\Config;
 use Magento\Store\Api\GroupRepositoryInterface;
 
 class Website implements ArgumentInterface
 {
-    /** @var StoreManagerInterface */
-    private StoreManagerInterface $storeManager;
-
-    /** @var DirectoryHelper */
-    private DirectoryHelper $directoryHelper;
-
-    /** @var Data */
-    private Data $switcherHelper;
-
-    /** @var GroupRepositoryInterface */
-    private GroupRepositoryInterface $storeGroupRepository;
-
     /**
-     * Website constructor
-     *
      * @param DirectoryHelper $directoryHelper
      * @param StoreManagerInterface $storeManager
-     * @param Data $switcherHelper
+     * @param Config $switcherConfig
      * @param GroupRepositoryInterface $storeGroupRepository
      */
     public function __construct(
-        DirectoryHelper $directoryHelper,
-        StoreManagerInterface $storeManager,
-        Data $switcherHelper,
-        GroupRepositoryInterface $storeGroupRepository
+        private readonly DirectoryHelper $directoryHelper,
+        private readonly StoreManagerInterface $storeManager,
+        private readonly Config $switcherConfig,
+        private readonly GroupRepositoryInterface $storeGroupRepository
     ) {
-        $this->directoryHelper = $directoryHelper;
-        $this->storeManager = $storeManager;
-        $this->switcherHelper = $switcherHelper;
-        $this->storeGroupRepository = $storeGroupRepository;
     }
 
     /**
@@ -53,7 +36,7 @@ class Website implements ArgumentInterface
     {
         $storeList = [];
         $stores = $this->storeManager->getStores();
-        $excludedStores = $this->switcherHelper->getExcludedStores() ? $this->switcherHelper->getExcludedStores() : '';
+        $excludedStores = $this->switcherConfig->getExcludedStores() ? $this->switcherConfig->getExcludedStores() : '';
         $excludedStores = explode(',', $excludedStores);
         /** @var StoreInterface|Store $store */
         foreach ($stores as $store) {
@@ -65,6 +48,8 @@ class Website implements ArgumentInterface
             if (!in_array($storeId, $excludedStores)) {
                 $storeList[$storeId]['id'] = $storeId;
                 $storeList[$storeId]['name'] = $store->getName();
+                $storeList[$storeId]['display_name']
+                    = $this->switcherConfig->getStoreName(ScopeInterface::SCOPE_STORE, $storeId);
                 $storeList[$storeId]['currency'] = $store->getCurrentCurrency()->getCurrencySymbol();
                 /** @phpstan-ignore-line */
                 $storeList[$storeId]['code'] = $store->getCode();
